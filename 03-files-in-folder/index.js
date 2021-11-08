@@ -9,9 +9,8 @@ fs.readdir(path.join(__dirname, 'secret-folder'), { withFileTypes: true }, (err,
     if (file.isFile()) {
       fs.stat(path.join(__dirname, 'secret-folder', file.name), { withFileTypes: true }, (err, statFile) => {
         if (err) throw err;
-        stdout.write(path.parse(file.name).name + ' - ' + path.extname(file.name).slice(1) + ' - ' + statFile.size + 'b' + '\n');
-      }
-      )
+        stdout.write(path.parse(file.name).name + ' - ' + path.parse(file.name).ext.slice(1) + ' - ' + statFile.size + 'b' + '\n');
+      });
     }
-  })
-})
+  });
+});
