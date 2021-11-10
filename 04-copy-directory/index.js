@@ -2,22 +2,24 @@ const fs = require('fs');
 const path = require('path');
 const stdout = process.stdout;
 
-fs.access(path.join(__dirname, 'files-copy'), err => {
-   if (!err) {
-      fs.rmdir(path.join(__dirname, 'files-copy'), { recursive: true }, err => {
-           if (err) throw err;
-      });
-       setTimeout(() => {dir()}, 500 ) ;
-    } else if (err) {
-           dir();
-   }
-});
+projectDist();
 
-function dir() {
-   fs.mkdir(path.join(__dirname, 'files-copy'), { recursive: true }, err => {
+async function projectDist() {
+   await fs.rmdir(path.join(__dirname, 'files-copy'), { recursive: true, force: true }, err => {
+      if (err) throw err;
+      dir();
+   });
+   await fs.mkdir(path.join(__dirname, 'files-copy'), { recursive: true }, (err) => {
       if (err) throw err;
    });
-   fs.readdir(path.join(__dirname, 'files'), { withFileTypes: true }, (err, files) => {
+
+}
+
+async function dir() {
+   await fs.mkdir(path.join(__dirname, 'files-copy'), { recursive: true }, err => {
+      if (err) throw err;
+   });
+   await fs.readdir(path.join(__dirname, 'files'), { withFileTypes: true }, (err, files) => {
       if (err) throw err;
       files.forEach(file => {
          if (file.isFile()) {
@@ -25,8 +27,7 @@ function dir() {
                if (err) throw err;
             });
          };
-         console.log('1')
       });
-      stdout.write('Your files have been copied in new directory files-copy \n')
+      stdout.write('Your files have been copied in new directory files-copy \n');
    });
 }
